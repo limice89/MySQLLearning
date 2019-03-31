@@ -68,7 +68,7 @@ H+aU1Qu1ZYojFM1Gmbe4HeYDOzRsJ5BhNrrV12h27JWkiRJ4F/Q=
 ```
 2.安装程序，替换应用程序目录中rpk文件的公钥
 安装完毕后打开finder,从应用程序中找到应用，右击显示包内容，打开目录、COntent/Resources,编辑rpk文件，将公钥替换保存
-![包内容目录](images/navicatrpk.png)
+![包内容目录](https://github.com/limice89/MySQLLearning/blob/master/images/navicatrpk.png?raw=true)
 3.算出有限mac版序列号秘钥（直接从网上找的序列号）
 中文版64位密钥序列号： NAVH-T4PX-WT8W-QBL5
 英文版64位密钥序列号： NAVG-UJ8Z-EVAP-JAUW
