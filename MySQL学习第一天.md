@@ -6,10 +6,13 @@
 
 ## MySQL安装
 由于使用mac电脑，使用Homebrew 安装MySQL,简单省事，当然你也可以选择去MySQL官网下载软件进行安装  
-执行命令```
+执行命令
+```
 brew install mysql
-```进行安装即可，安装比较顺利不再敖述，有出现问题的自行谷歌百度即可		
-启动MySQL`mysql -uroot`
+```
+
+进行安装即可，安装比较顺利不再敖述，有出现问题的自行谷歌百度即可		
+启动MySQL  `mysql -uroot`
 
 ##  Navicat的安装使用
 Navicat需要破解使用，当然也可以选择正版，破解思路从网上找的教程
