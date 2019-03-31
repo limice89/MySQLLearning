@@ -28,9 +28,10 @@ mysql> use yiibaidb
 Database changed
 mysql> source /Users/limice/Downloads/yiibaidb.sql;
 ```
+![导入数据库](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/createsql.png)
 
 检查是否导入数据库成功
->mysql> select city,phone,country from `offices`;
+>mysql> select city,phone,country from \`offices\`;
 
 ## SQL是什么？ MySQL是什么？
 
