@@ -2,7 +2,7 @@
 * MySQl安装
 * 图形界面软件 Navicat for SQL
 * 数据库基础知识
-* MySQL数据库管理系统
+
 
 ## MySQL安装
 由于使用mac电脑，使用Homebrew 安装MySQL,简单省事，当然你也可以选择去MySQL官网下载软件进行安装  
@@ -12,7 +12,9 @@ brew install mysql
 ```
 
 进行安装即可，安装比较顺利不再敖述，有出现问题的自行谷歌百度即可		
-启动MySQL  `mysql -uroot`
+启动MySQL服务： `mysql.server restart`	
+停止MySQL服务： `mysql.server stop`	
+进入MySQL  `mysql -uroot`
 
 ##  Navicat的安装使用
 Navicat需要破解使用，当然也可以选择正版，破解思路从网上找的教程
@@ -112,7 +114,7 @@ H+aU1Qu1ZYojFM1Gmbe4HeYDOzRsJ5BhNrrV12h27JWkiRJ4F/Q=
 
 然后就可以使用了Navicat,是不是很方便，嘻嘻
 
-##数据库基础知识
+## 数据库基础知识
 
 一、数据库定义    
 数据库（Database）是按照数据结构来组织、存储和管理数据的仓库。
@@ -162,11 +164,13 @@ H+aU1Qu1ZYojFM1Gmbe4HeYDOzRsJ5BhNrrV12h27JWkiRJ4F/Q=
 　成绩表中的学号不是成绩表的主键，不过是学生表的主键，成绩表的外键，同理课程号也是成绩表的外键
 　
 ```
-##MySQL数据库管理系统
-一、数据库
-二、数据表
-三、视图
-四、存储过程
+
+八、视图	
+视图是虚拟的表。与包含数据的表不一样，视图只包含使用时动态检索数据的查询。使用视图可以简化复杂的SQL查询语句。
+
+九、存储过程
+
+存储过程就是为以后使用而保存的一条或多条 SQL语句。可将其视为批文件，虽然它们的作用不仅限于批处理。存储过程可以简化操作，便于变动的管理等。
 
 
 
