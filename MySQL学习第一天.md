@@ -166,6 +166,7 @@ H+aU1Qu1ZYojFM1Gmbe4HeYDOzRsJ5BhNrrV12h27JWkiRJ4F/Q=
 ```
 
 八、视图	
+
 视图是虚拟的表。与包含数据的表不一样，视图只包含使用时动态检索数据的查询。使用视图可以简化复杂的SQL查询语句。
 
 九、存储过程
