@@ -506,7 +506,7 @@ create database database_x
 ```
 
 ![作业一](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/day2_1.png)
-![作业一]()
+![作业一](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/day2_2.png)
 
 ```
 项目二：查找大国（难度：简单）
@@ -532,8 +532,8 @@ create database database_x
 
 ```
 
-![作业二]()
-![作业二]()
+![作业二](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/day2_3.png)
+![作业二](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/day2_4.png)
 
 
 
