@@ -505,6 +505,7 @@ create database database_x
 说明：所有电子邮箱都是小写字母。
 ```
 
+![作业一](https://raw.githubusercontent.com/limice89/MySQLLearning/master/images/day2_1.png)
 ![作业一]()
 
 ```
@@ -531,6 +532,7 @@ create database database_x
 
 ```
 
+![作业二]()
 ![作业二]()
 
 
