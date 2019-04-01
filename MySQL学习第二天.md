@@ -51,7 +51,7 @@ MySQL是一个数据库管理系统，也是一个关系数据库。
 
 使用SELECT语句从表或视图获取数据。表由行和列组成，如电子表格。 通常，我们只希望看到子集行，列的子集或两者的组合。SELECT语句的结果称为结果集，它是行列表，每行由相同数量的列组成。
 
-**SELECT语句的语法：**
+### SELECT语句的语法
 
 ```
 SELECT 
@@ -85,7 +85,50 @@ LIMIT offset, length;
 
 * <b style="color:red">`LIMIT`</b>限制返回行的数量。
 
+检索单列  `SELECT prod_name FROM Products;`
 
+检索多列  `SELECT prod_id,prod_name,prod_price FROM Products;`
+
+检索所有列  `SELECT * FROM Products;`
+
+### 去重语句:
+`SELECT DISTINCT vend_id FROM Products;`
+
+### 限制结果:前N个语句
+
+* 在 SQL Server和 Access中使用SELECT时，可以使用TOP关键字来限制
+`SELECT TOP 5 prod_name FROM Products;`
+
+* 如果使用的DB2，习惯使用下面这一 DBMS特定的 SQL语 句:
+`SELECT prod_name
+FROM Products
+FETCH FIRST 5 ROWS ONLY;`
+
+* 使用 Oracle，需要基于ROWNUM(行计数器)来计算行:
+
+`SELECT prod_name FROM Products
+WHERE ROWNUM <=5;`
+
+* 使用 MySQL、MariaDB、PostgreSQL或者 SQLite，需要使用LIMIT 子句:
+`SELECT prod_name FROM Products LIMIT 5;`
+
+* 为了得到后面的 5行数据，需要指定从哪儿开始以及检索的行数:
+`SELECT prod_name FROM Products LIMIT 5 OFFSET 5;`
+LIMIT 5 OFFSET 5指示 MySQL等 DBMS返回从第 5行起的 5行数据
+
+### CASE…END判断语句
+https://www.yiibai.com/mysql/case-statement.html
+**语法**
+
+```
+CASE  case_expression
+   WHEN when_expression_1 THEN commands
+   WHEN when_expression_2 THEN commands
+   ...
+   ELSE commands
+END CASE;
+
+```
 
 
 
