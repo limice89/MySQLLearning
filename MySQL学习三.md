@@ -150,10 +150,281 @@ MEMORY默认使用哈希索引。速度比使用B型树索引快。当然如果�
 
 注意，同一个数据库也可以使用多种存储引擎的表。如果一个表要求比较高的事务处理，可以选择InnoDB。这个数据库中可以将查询要求比较高的表选择MyISAM存储。如果该数据库需要一个用于查询的临时表，可以选择MEMORY存储引擎。
 
+### <span id = "1.3">用SQL语句向表中添加数据<span>
+
+**语法**
+
+```
+INSERT INTO table_name ( field1, field2,...fieldN )
+                       VALUES
+                       ( value1, value2,...valueN );
+```
+
+**多种添加方式**
+
+```
+--指定列名
+INSERT INTO student(id,name,gender,age) VALUES(01,'xiaoming',1,18); 
+--不指定列名
+INSERT INTO employee VALUES(02,'xiaobai',1,17);
+--指定列名
+INSERT INTO employee(id,name) VALUES(03,'xiaohong');
+--添加多条
+INSERT INTO student(id,name,gender,age) VALUES(01,'xiaoming',1,18)，
+(02,'xiaohong',0,16)，
+(03,'xiaoxiao',1,17);
+```
+
+**表复制**
+
+```
+INSERT INTO table_1
+SELECT c1, c2, FROM table_2;
 
 
+```
+
+### <span id = "1.4">用SQL语句删除表<span>
+
+* 删除表 ----DROP
+
+```
+DROP TABLE table_name;
+```
+
+```
+实例：删除学生表。
+
+drop table student;
+```
+
+* 删除表内数据 ----DELETE
+
+```
+DELETE FROM table_name
+WHERE condition;
+
+```
+
+```
+实例：删除学生表内姓名为张三的记录。
+
+delete from  student where  T_name = "张三";
+```
+
+* 清除表内数据，保存表结构 ----TRUNCATE
+
+```
+TRUNCATE TABLE yable_name;
+```
+
+```
+实例：清除学生表内的所有数据。
+
+truncate  table  student;
+```
+
+>1、当你不再需要该表时， 用 drop;		
+>2、当你仍要保留该表，但要删除所有记录时， 用 truncate		
+>3、当你要删除部分记录时， 用 delete。
+
+### <span id = "1.4">用SQL语句修改表<span>
+
+* 重命名表
+
+```
+第一种
+RENAME TABLE old_table_name TO new_table_name;
+第二种
+ALTER TABLE old_table_name
+RENAME TO new_table_name;
 
 
+---------------------------------------------------
+旧表(old_table_name)必须存在，新表(new_table_name)必须不存在。 如果新表new_table_name存在，则该语句将失败。
+除了表之外，我们还可以使用RENAME TABLE语句来重命名视图。
+在执行RENAME TABLE语句之前，必须确保没有活动事务或锁定表。
+
+请注意，不能使用RENAME TABLE语句来重命名临时表，但可以使用ALTER TABLE语句重命名临时表。
+
+
+```
+
+* 修改列名
+
+```
+语法：ALTER TABLE tb_name CHANGE [COLUMN] old_col_name new_col_name column_definition [FIRST | AFTER col_name]
+ALTER TABLE 表名字 CHANGE 原列名 新列名 数据类型 约束;
+
+eg:
+修改表tb1的name字段，改为username
+
+ALTER TABLE tb1 CHANGE name username VARCHAR(50);
+```
+
+* 修改表中的数据
+
+```
+UPDATE [LOW_PRIORITY] [IGNORE] table_name 
+SET 
+    column_name1 = expr1,
+    column_name2 = expr2,
+    ...
+WHERE
+    condition;
+    
+eg:
+UPDATE employees 
+SET 
+    lastname = 'Hill',
+    email = 'mary.hill@yiibai.com'
+WHERE
+    employeeNumber = 1056;
+
+
+```
+
+* 删除行
+
+```
+DELETE TABLE table_name where condition;
+
+eg:
+DELETE FROM employees 
+WHERE
+    officeCode = 4;
+----------------------------------------
+限制要删除的行数，则使用LIMIT子句
+DELETE FROM table
+LIMIT row_count;
+请注意，表中的行顺序未指定，因此，当您使用LIMIT子句时，应始终使用ORDER BY子句，不然删除的记录可能不是你所预期的那样。
+
+DELETE FROM table_name
+ORDER BY c1, c2, ...
+LIMIT row_count;
+
+```
+
+* 删除列
+
+```
+ALTER TABLE table_name DROP (COLUMN) column_name;
+
+eg:
+ALTER TABLE student
+DROP name;
+```
+
+* 新建列
+
+```
+在一个建好的表中增加一列：
+ALTER TABLE table_name ADD COLUMN new_column_name VARCHAR(20) NOT NULL;
+这条语句会向已有的表中加入新的一列，这一列在表的最后一列位置。如果我们希望添加在指定的一列，可以用：
+ALTER TABLE table_name ADD COLUMN new_column_name VARCHAR(20) NOT NULL AFTER column_name;
+如果添加到第一列，使用：
+ALTER TABLE table_name ADD COLUMN new_column_name VARCHAR(20) NOT NULL FIRST;
+```
+
+* 新建行
+
+```
+INSERT INTO table_name ( field1, field2,...fieldN )
+                       VALUES
+                       ( value1, value2,...valueN );
+```
+
+###### 作业 #######
+
+```
+项目三：超过5名学生的课（难度：简单）
+创建如下所示的courses 表 ，有: student (学生) 和 class (课程)。
+例如,表:
++---------+------------+
+| student | class      |
++---------+------------+‘’
+| A       | Math       |
+| B       | English    |
+| C       | Math       |
+| D       | Biology    |
+| E       | Math       |
+| F       | Computer   |
+| G       | Math       |
+| H       | Math       |
+| I       | Math       |
+| A      | Math       |
++---------+------------+
+
+编写一个 SQL 查询，列出所有超过或等于5名学生的课。
+应该输出:
++---------+
+| class   |
++---------+
+| Math    |
++---------+
+Note:
+学生在每个课中不应被重复计算。
+```
+
+```
+CREATE TABLE IF NOT EXISTS courses(
+student VARCHAR(8) NOT NULL, class VARCHAR(40) NULL
+);
+
+INSERT INTO courses(student,class) VALUES('A','Math'),
+('B','English'),
+('C','Math'),
+('D','Biology'),
+('E','Math'),
+('F','Computer'),
+('G','Math'),
+('H','Math'),
+('I','Math'),
+('A','Math');
+
+SELECT class FROM courses GROUP BY class HAVING count(DISTINCT student)>=5;
+
+```
+
+```
+项目四：交换工资（难度：简单）
+创建一个 salary表，如下所示，有m=男性 和 f=女性的值 。
+例如:
+| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | m   | 2500   |
+| 2  | B    | f   | 1500   |
+| 3  | C    | m   | 5500   |
+| 4  | D    | f   | 500    |
+
+交换所有的 f 和 m 值(例如，将所有 f 值更改为 m，反之亦然)。要求使用一个更新查询，并且没有中间临时表。
+运行你所编写的查询语句之后，将会得到以下表:
+| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | f  | 2500   |
+| 2  | B    | m   | 1500   |
+| 3  | C    | f   | 5500   |
+| 4  | D    | m   | 500    |
+```
+
+```
+CREATE TABLE IF NOT EXISTS salary(
+id INT(10) NOT NULL AUTO_INCREMENT,
+name VARCHAR(10) DEFAULT NULL,
+sex VARCHAR(1) NOT NULL,
+salary VARCHAR(10) NULL,
+PRIMARY KEY (id)
+);
+
+INSERT INTO salary(id, name,sex,salary) VALUES(1,'A','m','2500'),
+(2,'B','f','1500'),
+(3,'C','m','5500'),
+(4,'D','f','500');
+
+UPDATE salary SET sex = (CASE sex WHEN 'f' THEN 'm' ELSE 'f' END CASE);
+UPDATE salary SET sex = if(sex ='f','m','f');
+
+```
 
 
 
