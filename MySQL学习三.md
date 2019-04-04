@@ -228,7 +228,7 @@ truncate  table  student;
 >2、当你仍要保留该表，但要删除所有记录时， 用 truncate		
 >3、当你要删除部分记录时， 用 delete。
 
-### <span id = "1.4">用SQL语句修改表<span>
+### <span id = "1.5">用SQL语句修改表<span>
 
 * 重命名表
 
@@ -421,9 +421,600 @@ INSERT INTO salary(id, name,sex,salary) VALUES(1,'A','m','2500'),
 (3,'C','m','5500'),
 (4,'D','f','500');
 
-UPDATE salary SET sex = (CASE sex WHEN 'f' THEN 'm' ELSE 'f' END CASE);
+UPDATE salary SET sex = (CASE sex WHEN 'f' THEN 'm' ELSE 'f' END);
 UPDATE salary SET sex = if(sex ='f','m','f');
 
+```
+
+
+## <span id = "2">表联结</span>
+
+### <span id = "2.1"> MySQL别名</span>
+
+**为表取别名:**
+
+```
+SELECT * FROM 表名 [AS] 别名；
+--------------------------------------------------------------
+SELECT * FROM employees as
+em WHERE em.employeeNumber = 1501;
+
++----------------+----------+-----------+-----------+------------------+------------+-----------+-----------+
+| employeeNumber | lastName | firstName | extension | email            | officeCode | reportsTo | jobTitle  |
++----------------+----------+-----------+-----------+------------------+------------+-----------+-----------+
+|           1501 | Bott     | Larry     | x2311     | lbott@yiibai.com | 7          |      1102 | Sales Rep |
++----------------+----------+-----------+-----------+------------------+------------+-----------+-----------+
+```
+
+**为字段取别名**
+
+```
+SELECT 字段名 [AS] 别名 [，字段名 [AS] 别名，……] FROM 表名； 
+------------------------------------------------------------
+SELECT employeeNumber AS id, lastName AS name 
+FROM employees;
++------+-----------+
+| id   | name      |
++------+-----------+
+| 1002 | Murphy    |
+| 1056 | Patterson |
+| 1076 | Firrelli  |
+| 1088 | Patterson |
+| 1102 | Bondur    |
+| 1143 | Bow       |
+| 1165 | Jennings  |
+| 1166 | Thompson  |
+| 1188 | Firrelli  |
+| 1216 | Patterson |
+| 1286 | Tseng     |
+| 1323 | Vanauf    |
+| 1337 | Bondur    |
+| 1370 | Hernandez |
+| 1401 | Castillo  |
+| 1501 | Bott      |
+| 1504 | Jones     |
+| 1611 | Fixter    |
+| 1612 | Marsh     |
+| 1619 | King      |
+| 1621 | Nishi     |
+| 1625 | Kato      |
+| 1702 | Gerard    |
++------+-----------+
+23 rows in set (0.00 sec)
+
+SELECT
+ CONCAT_WS(' ', lastName, firstname) `Full name`
+FROM
+ employees
+ORDER BY
+ `Full name`;
++-------------------+
+| Full name         |
++-------------------+
+| Bondur Gerard     |
+| Bondur Loui       |
+| Bott Larry        |
+| Bow Anthony       |
+| Castillo Pamela   |
+| Firrelli Jeff     |
+| Firrelli Julie    |
+| Fixter Andy       |
+| Gerard Martin     |
+| Hernandez Gerard  |
+| Jennings Leslie   |
+| Jones Barry       |
+| Kato Yoshimi      |
+| King Tom          |
+| Marsh Peter       |
+| Murphy Diane      |
+| Nishi Mami        |
+| Patterson Mary    |
+| Patterson Steve   |
+| Patterson William |
+| Thompson Leslie   |
+| Tseng Foon Yue    |
+| Vanauf George     |
++-------------------+
+23 rows in set (0.01 sec)
+
+```
+
+### <span id = "2.2"> INNER JOIN内连接</span>
+
+![内连接](https://www.yiibai.com/uploads/images/201707/1707/671100747_41692.png)
+
+>MySQL INNER JOIN子句将一个表中的行与其他表中的行进行匹配，并允许从两个表中查询包含列的行记录。
+
+**语法**
+
+```
+SELECT column_list
+FROM t1
+INNER JOIN t2 ON join_condition1
+INNER JOIN t3 ON join_condition2
+...
+WHERE where_conditions;
+
+```
+![https://www.yiibai.com/uploads/images/201707/1707/202110711_46519.png](https://www.yiibai.com/uploads/images/201707/1707/202110711_46519.png)
+
+```
+
+获取products表中的productCode和productName列的值。获取productlines表产品线的描述 - textDescription列的值。
+
+SELECT 
+    productCode, 
+    productName, 
+    textDescription
+FROM
+    products t1
+        INNER JOIN
+    productlines t2 ON t1.productline = t2.productline;
+或者
+SELECT 
+    productCode, 
+    productName, 
+    textDescription
+FROM
+    products
+        INNER JOIN
+    productlines USING (productline);
+
+
+```
+
+***MySQL INNER JOIN GROUP BY子句***
+![订单和订单详细表](https://www.yiibai.com/uploads/images/201707/1707/932110748_83699.png)
+
+```
+---s使用GROUP BY 子句的INNER JOIN 子句从 orders 和 orderdetails 表中获取订单号,订单状态和总销售额
+
+SELECT
+ 	T1.orderNumber,
+ 	status,
+ 	SUM(quantityOrdered * priceEach) total
+FROM
+	orders AS T1
+		INNER JOIN
+	orderdetails AS T2 ON T1.orderNumber = T2.orderNumber
+GROUP BY orderNumber
+limit 10;
+----------------------------------------------------------
++-------------+---------+----------+
+| orderNumber | status  | total    |
++-------------+---------+----------+
+|       10100 | Shipped | 10223.83 |
+|       10101 | Shipped | 10549.01 |
+|       10102 | Shipped |  5494.78 |
+|       10103 | Shipped | 50218.95 |
+|       10104 | Shipped | 40206.20 |
+|       10105 | Shipped | 53959.21 |
+|       10106 | Shipped | 52151.81 |
+|       10107 | Shipped | 22292.62 |
+|       10108 | Shipped | 51001.22 |
+|       10109 | Shipped | 25833.14 |
++-------------+---------+----------+
+10 rows in set (0.00 sec)
+
+SELECT 
+    orderNumber, 
+    productName, 
+    msrp, 
+    priceEach
+FROM
+    products p
+        INNER JOIN
+    orderdetails o ON p.productcode = o.productcode
+        AND p.msrp > o.priceEach
+WHERE
+    p.productcode = 'S10_1678';
+--------------------------------------------------------
++-------------+---------------------------------------+-------+-----------+
+| orderNumber | productName                           | msrp  | priceEach |
++-------------+---------------------------------------+-------+-----------+
+|       10107 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     81.35 |
+|       10121 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     86.13 |
+|       10134 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     90.92 |
+|       10145 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     76.56 |
+|       10159 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     81.35 |
+|       10403 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     85.17 |
+...
+|       10417 | 1969 Harley Davidson Ultimate Chopper | 95.70 |     79.43 |
++-------------+---------------------------------------+-------+-----------+
+26 rows in set (0.00 sec)
+
+```
+
+### <span id = "2.3"> LEFT JOIN左连接</span>
+
+![左连接接](https://www.yiibai.com/uploads/images/201707/1807/936120749_19056.png)
+
+
+>LEFT JOIN子句允许您从匹配的左右表中查询选择行记录，连接左表(t1)中的所有行，即使在右表(t2)中找不到匹配的行也显示出来，但使用NULL值代替
+
+示例:
+![订单表和客户表](https://www.yiibai.com/uploads/images/201707/1807/357120755_17620.png)
+>
+订单(orders)表中的每个订单必须属于客户(customers)表中的客户。客户(customers)表中的每个客户在订单(orders)表中可以有零个或多个订单。
+
+要查询每个客户的所有订单，可以使用LEFT JOIN子句
+
+```
+SELECT
+ c.customerNumber,
+ c.customerName,
+ orderNumber,
+ o.status
+FROM
+ customers c
+LEFT JOIN orders o ON c.customerNumber = o.customerNumber;
+或者:
+SELECT
+ c.customerNumber,
+ customerName,
+ orderNumber,
+ status
+FROM
+ customers c
+LEFT JOIN orders USING (customerNumber);
+
+```
+
+***使用MySQL LEFT JOIN子句来查找不匹配的行***
+
+例如，要查找没有下过订单的所有客户，请使用以下查询：
+
+```
+SELECT 
+    c.customerNumber, 
+    c.customerName, 
+    orderNumber, 
+    o.status
+FROM
+    customers c
+        LEFT JOIN
+    orders o ON c.customerNumber = o.customerNumber
+WHERE
+    orderNumber IS NULL;
+--------------------------------- 
+SELECT 
+	c.customerNumber,
+	c.customerName,
+	o.orderNumber,
+	o.status
+FROM
+	customers c
+			LEFT JOIN
+	orders o USING(customerNumber)
+WHERE 
+	orderNumber IS NULL;
+-------------------------------------------------------
++----------------+--------------------------------+-------------+--------+
+| customerNumber | customerName                   | orderNumber | status |
++----------------+--------------------------------+-------------+--------+
+|            125 | Havel & Zbyszek Co             |        NULL | NULL   |
+|            168 | American Souvenirs Inc         |        NULL | NULL   |
+|            169 | Porto Imports Co.              |        NULL | NULL   |
+|            206 | Asian Shopping Network, Co     |        NULL | NULL   |
+|            223 | Natrlich Autos                 |        NULL | NULL   |
+|            237 | ANG Resellers                  |        NULL | NULL   |
+|            247 | Messner Shopping Network       |        NULL | NULL   |
+|            273 | Franken Gifts, Co              |        NULL | NULL   |
+...
+|            481 | Raanan Stores, Inc             |        NULL | NULL   |
++----------------+--------------------------------+-------------+--------+
+24 rows in set (0.01 sec)
+
+```
+
+***WHERE子句与ON子句中的条件***
+
+```
+SELECT 
+    o.orderNumber, 
+    customerNumber, 
+    productCode
+FROM
+    orders o
+        LEFT JOIN
+    orderDetails USING (orderNumber)
+WHERE
+    orderNumber = 10123;
+    
++-------------+----------------+-------------+
+| orderNumber | customerNumber | productCode |
++-------------+----------------+-------------+
+|       10123 |            103 | S18_1589    |
+|       10123 |            103 | S18_2870    |
+|       10123 |            103 | S18_3685    |
+|       10123 |            103 | S24_1628    |
++-------------+----------------+-------------+
+4 rows in set (0.00 sec)
+
+#######################################################
+如果将条件从WHERE子句移动到ON子句：
+SELECT 
+    o.orderNumber, 
+    customerNumber, 
+    productCode
+FROM
+    orders o
+        LEFT JOIN
+    orderDetails d ON o.orderNumber = d.orderNumber
+        AND o.orderNumber = 10123;
++-------------+----------------+-------------+
+| orderNumber | customerNumber | productCode |
++-------------+----------------+-------------+
+|       10123 |            103 | S18_1589    |
+|       10123 |            103 | S18_2870    |
+|       10123 |            103 | S18_3685    |
+|       10123 |            103 | S24_1628    |
+|       10298 |            103 | NULL        |
+...
+|       10399 |            496 | NULL        |
++-------------+----------------+-------------+
+329 rows in set (0.01 sec)
+
+
+```
+>请注意，对于INNER JOIN子句，ON子句中的条件等同于WHERE子句中的条件。
+
+### <span id = "2.4"> CROSS JOIN交叉连接</span>
+
+CROSS JOIN连接两个表,结果集将包括两个表中的所有行，其中结果集中的每一行都是第一个表中的行与第二个表中的行的组合。 当连接的表之间没有关系时，会使用这种情况。
+要特别注意的是，如果每个表有1000行，那么结果集中就有1000 x 1000 = 1,000,000行，那么数据量是非常巨大的。
+
+**语法**
+
+```
+SELECT 
+    *
+FROM
+    T1
+        CROSS JOIN
+    T2;
+------------------------------------------------------------
+
+
+SELECT customers.customerName, orders.orderNumber
+FROM customers
+	CROSS JOIN
+orders
+ORDER BY orderNumber;
+```
+
+```
+如果添加了WHERE子句，如果T1和T2有关系，则CROSS JOIN的工作方式与INNER JOIN子句类似，如以下查询所示：
+SELECT 
+    *
+FROM
+    T1
+        CROSS JOIN
+    T2
+WHERE
+    T1.id = T2.id;
+
+```
+### <span id = "2.5"> 自连接</span>
+
+```
+employees表
++----------------+-----------+-----------+-----------+-----------------------+------------+-----------+----------------------+
+| employeeNumber | lastName  | firstName | extension | email                 | officeCode | reportsTo | jobTitle             |
++----------------+-----------+-----------+-----------+-----------------------+------------+-----------+----------------------+
+|           1002 | Murphy    | Diane     | x5800     | dmurphy@yiibai.com    | 1          |      NULL | President            |
+|           1056 | Patterson | Mary      | x4611     | mpatterso@yiibai.com  | 1          |      1002 | VP Sales             |
+|           1076 | Firrelli  | Jeff      | x9273     | jfirrelli@yiibai.com  | 1          |      1002 | VP Marketing         |
+|           1088 | Patterson | William   | x4871     | wpatterson@yiibai.com | 6          |      1056 | Sales Manager (APAC) |
+|           1102 | Bondur    | Gerard    | x5408     | gbondur@gmail.com     | 4          |      1056 | Sale Manager (EMEA)  |
+|           1143 | Bow       | Anthony   | x5428     | abow@gmail.com        | 1          |      1056 | Sales Manager (NA)   |
+|           1165 | Jennings  | Leslie    | x3291     | ljennings@yiibai.com  | 1          |      1143 | Sales Rep            |
+|           1166 | Thompson  | Leslie    | x4065     | lthompson@yiibai.com  | 1          |      1143 | Sales Rep            |
+|           1188 | Firrelli  | Julie     | x2173     | jfirrelli@yiibai.com  | 2          |      1143 | Sales Rep            |
+|           1216 | Patterson | Steve     | x4334     | spatterson@yiibai.com | 2          |      1143 | Sales Rep            |
+|           1286 | Tseng     | Foon Yue  | x2248     | ftseng@yiibai.com     | 3          |      1143 | Sales Rep            |
+|           1323 | Vanauf    | George    | x4102     | gvanauf@yiibai.com    | 3          |      1143 | Sales Rep            |
+|           1337 | Bondur    | Loui      | x6493     | lbondur@yiibai.com    | 4          |      1102 | Sales Rep            |
+|           1370 | Hernandez | Gerard    | x2028     | ghernande@gmail.com   | 4          |      1102 | Sales Rep            |
+|           1401 | Castillo  | Pamela    | x2759     | pcastillo@gmail.com   | 4          |      1102 | Sales Rep            |
+|           1501 | Bott      | Larry     | x2311     | lbott@yiibai.com      | 7          |      1102 | Sales Rep            |
+|           1504 | Jones     | Barry     | x102      | bjones@gmail.com      | 7          |      1102 | Sales Rep            |
+|           1611 | Fixter    | Andy      | x101      | afixter@yiibai.com    | 6          |      1088 | Sales Rep            |
+|           1612 | Marsh     | Peter     | x102      | pmarsh@yiibai.com     | 6          |      1088 | Sales Rep            |
+|           1619 | King      | Tom       | x103      | tking@gmail.com       | 6          |      1088 | Sales Rep            |
+|           1621 | Nishi     | Mami      | x101      | mnishi@gmail.com      | 5          |      1056 | Sales Rep            |
+|           1625 | Kato      | Yoshimi   | x102      | ykato@gmail.com       | 5          |      1621 | Sales Rep            |
+|           1702 | Gerard    | Martin    | x2312     | mgerard@gmail.com     | 4          |      1102 | Sales Rep            |
++----------------+-----------+-----------+-----------+-----------------------+------------+-----------+----------------------+
+
+```
+
+要获得整个组织结构，可以使用employeeNumber和reportsTo列将employees表连接自身。employees表有两个角色：一个是经理，另一个是直接报告者(即，下属员工)。
+
+```
+SELECT 
+    CONCAT(m.lastname, ', ', m.firstname) AS 'Manager',
+    CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
+FROM
+    employees e
+        INNER JOIN
+    employees m ON m.employeeNumber = e.reportsto
+ORDER BY manager;
+
+```
+
+在上述输出中，只能看到有经理的员工。 但是，由于INNER JOIN子句，所以看不到总经理。总经理是没有任何经理的员工，或者他的经理人是NULL
+
+```
+SELECT 
+    IFNULL(CONCAT(m.lastname, ', ', m.firstname),
+            'Top Manager') AS 'Manager',
+    CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
+FROM
+    employees e
+        LEFT JOIN
+    employees m ON m.employeeNumber = e.reportsto
+ORDER BY manager DESC;
+
+```
+
+### <span id = "2.6"> UNION</span>
+
+>MySQL UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中.多个 SELECT 语句会删除重复的数据。
+
+**语法**
+
+```
+SELECT expression1, expression2, ... expression_n
+FROM tables
+[WHERE conditions]
+UNION [ALL | DISTINCT]
+SELECT expression1, expression2, ... expression_n
+FROM tables
+[WHERE conditions];
+
+-----------------------------------------------------
+
+
+    expression1, expression2, ... expression_n: 要检索的列。
+
+    tables: 要检索的数据表。
+
+    WHERE conditions: 可选， 检索条件。
+
+    DISTINCT: 可选，删除结果集中重复的数据。默认情况下 UNION 操作符已经删除了重复数据，所以 DISTINCT 修饰符对结果没啥影响。
+
+    ALL: 可选，返回所有结果集，包含重复数据。
+    
+------------------------------------------------------
+SELECT country FROM Websites
+UNION
+SELECT country FROM apps
+ORDER BY country; 
+
+SELECT country FROM Websites
+UNION ALL
+SELECT country FROM apps
+ORDER BY country; 
+
+```
+
+* CROSS JOIN
+
+![CROSS JOIN](https://www.yiibai.com/uploads/images/201707/1807/423180701_88270.png)
+
+* INNER JOIN
+
+![INNER JOIN](https://www.yiibai.com/uploads/images/201707/1807/791200745_93575.png)
+
+* LEFT JOIN
+
+![LEFT JOIN](https://www.yiibai.com/uploads/images/201707/1807/397200753_25587.png)
+
+* RIGHT JOIN
+
+![RIGHT JOIN](https://www.yiibai.com/uploads/images/201707/1807/906210707_20913.png)
+
+* 自连接
+
+单个表内部处理数据
+
+* UNION
+
+多个表混合组成一个查询结果集合
+
+###### 作业 #######
+
+```
+项目五：组合两张表 （难度：简单）
+在数据库中创建表1和表2，并各插入三行数据（自己造）
+表1: Person
++-------------+---------+
+| 列名         | 类型     |
++-------------+---------+
+| PersonId    | int     |
+| FirstName   | varchar |
+| LastName    | varchar |
++-------------+---------+
+PersonId 是上表主键
+
+表2: Address
++-------------+---------+
+| 列名         | 类型    |
++-------------+---------+
+| AddressId   | int     |
+| PersonId    | int     |
+| City        | varchar |
+| State       | varchar |
++-------------+---------+
+AddressId 是上表主键
+
+编写一个 SQL 查询，满足条件：无论 person 是否有地址信息，都需要基于上述两表提供 person 的以下信息：FirstName, LastName, City, State
+
+**************************************************************
+创建表
+CREATE TABLE Person (PersonId INT(10) NOT NULL PRIMARY KEY,FirstName VARCHAR(20) NULL,SecondName VARCHAR(20) NULL);
+
+CREATE TABLE Address (AddressId INT(10) NOT NULL PRIMARY KEY, PersonId INT(10) NOT NULL, City VARCHAR(10) NULL,State VARCHAR(40) NULL);
+插入数据
+INSERT INTO Person VALUES(1,'wang','gang'),(2,'xiao','ming'),(3,'li','si');
+
+INSERT INTO Address VALUES(1,2,'北京','朝阳'),(2,3,'石家庄','正定'),(3,1,'郑州','金水');
+
+作业答案:
+SELECT 
+		p.FirstName,
+		p.SecondName,
+		a.City,
+		a.State
+FROM Person p
+		LEFT JOIN
+	  Address a
+ON (p.PersonId = a.PersonId);
+或
+SELECT 
+		p.FirstName,
+		p.SecondName,
+		City,
+		State
+FROM Person p
+		LEFT JOIN
+	  Address
+USING(PersonId);
+
+项目六：删除重复的邮箱（难度：简单）
+编写一个 SQL 查询，来删除 email 表中所有重复的电子邮箱，重复的邮箱里只保留 Id 最小 的那个。
++----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+Id 是这个表的主键。
+例如，在运行你的查询语句之后，上面的 Person表应返回以下几行:
++----+------------------+
+| Id | Email            |
++----+------------------+
+| 1  | a@b.com |
+| 2  | c@d.com  |
++----+------------------+
+
+*********************************************************
+创建数据库
+CREATE TABLE IF NOT EXISTS email(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	Email VARCHAR(30) NOT NULL
+);
+插入数据
+INSERT INTO email VALUES(1,'a@b.com'),(2,'c@d.com'),(3,'a@b.com');
+
+作业参考答案:
+DELETE e1
+FROM email e1, email e2  
+WHERE e1.email = e2.email
+AND  
+e1.id > e2.id;
 ```
 
 
@@ -431,46 +1022,3 @@ UPDATE salary SET sex = if(sex ='f','m','f');
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## <span id = "2">表联结</span>
