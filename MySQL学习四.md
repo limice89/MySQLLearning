@@ -270,7 +270,16 @@ VALUES
 	(4,"Green"),
 	(5,"Jeames");
 参考查询语句:
-
+判断id 是奇数且最后一个 id不变  判断id是奇数且不为最后一个 id+1
+判断id是偶数 id-1
+SELECT (
+		CASE WHEN id%2=1 and id = (SELECT COUNT(*) FROM seat) THEN id
+		WHEN id%2 =1 THEN id+1
+		ELSE id-1
+		END
+		) AS id,student
+FROM seat
+ORDER BY id;
 ```
 
 ```
@@ -300,7 +309,6 @@ VALUES
 +-------+------+
 
 *******************************************************
-```
 创建数据库表
 CREATE TABLE score(
  	Id INT(10) NOT NULL PRIMARY KEY, 
@@ -317,6 +325,15 @@ VALUES
 	(6,3.65);
 参考查询语句:
 
+SELECT Score,(
+	SELECT COUNT(DISTINCT(Score))+1
+	FROM score
+	WHERE Score>s1.Score
+) AS RANK
+FROM score AS s1
+ORDER BY Score DESC,Id ASC;
+
+```
 ```
 项目十：行程和用户（难度：困难）
 Trips 表中存所有出租车的行程信息。每段行程有唯一键 Id，Client_Id 和 Driver_Id 是 Users 表中 Users_Id 的外键。Status 是枚举类型，枚举成员为 (‘completed’, ‘cancelled_by_driver’, ‘cancelled_by_client’)。
@@ -394,4 +411,13 @@ INSERT INTO Users
             (11, 'No', 'driver'),
             (12, 'No', 'driver'),
             (13, 'No', 'driver');
+            
+参考查询:
+
+SELECT t.Request_at AS 'Day',
+ROUND((SUM(CASE WHEN t.Status LIKE 'cancelled%' THEN 1 ELSE 0 END))/COUNT(*),2) AS 'Cancellation Rate' 
+FROM Trips AS t INNER JOIN Users AS u 
+ON u.Users_Id = t.Client_Id AND u.Banned = 'No' 
+GROUP BY t.Request_at ;
+
 ```
